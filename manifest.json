@@ -1,6 +1,6 @@
 {
   "name": "Tarjeta de Fe",
-  "short_name": "Fe",
+  "short_name": "Tarjeta de Fe",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fff8e1",
