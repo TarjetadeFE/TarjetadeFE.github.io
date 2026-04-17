@@ -1,4 +1,3 @@
-
 {
   "name": "Tarjeta de Fe",
   "short_name": "Fe",
@@ -6,6 +5,7 @@
   "display": "standalone",
   "background_color": "#fff8e1",
   "theme_color": "#d4af37",
+  "description": "Crea y comparte tarjetas con enseñanzas de la misa",
   "icons": [
     {
       "src": "icon-192.png",
