@@ -343,6 +343,47 @@ document.getElementById("whatsapp-btn").addEventListener("click", async () => {
 });
 </script>
 
+  <script>
+const params = new URLSearchParams(window.location.search);
+const card = params.get("card");
+
+const overlay = document.getElementById("cita-overlay");
+const img = document.querySelector("#tarjeta-container img");
+
+// 🎨 CONFIGURACIÓN DE TARJETAS
+const tarjetas = {
+  "1": {
+    texto: "Dios tiene un plan perfecto para ti 🙏",
+    imagen: "tarjeta1.png",
+    color: "#DAA520",
+    fuente: "'Playfair Display', serif"
+  },
+  "2": {
+    texto: "Confía en Él, todo estará bien ✨",
+    imagen: "tarjeta2.png",
+    color: "#2E8B57",
+    fuente: "'Georgia', serif"
+  },
+  "3": {
+    texto: "No estás solo, Dios va contigo 💛",
+    imagen: "tarjeta3.png",
+    color: "#8B0000",
+    fuente: "'Courier New', monospace"
+  }
+};
+
+// 🚀 APLICAR CAMBIOS SEGÚN QR
+if (card && tarjetas[card]) {
+  const t = tarjetas[card];
+
+  overlay.textContent = t.texto;
+  overlay.style.color = t.color;
+  overlay.style.fontFamily = t.fuente;
+
+  img.src = t.imagen;
+}
+</script>
+
   
 </body>
 </html>
