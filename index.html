@@ -343,46 +343,75 @@ document.getElementById("whatsapp-btn").addEventListener("click", async () => {
 });
 </script>
 
-  <script>
-const params = new URLSearchParams(window.location.search);
-const card = params.get("card");
 
-const overlay = document.getElementById("cita-overlay");
-const img = document.querySelector("#tarjeta-container img");
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-// 🎨 CONFIGURACIÓN DE TARJETAS
-const tarjetas = {
-  "1": {
-    texto: "Dios tiene un plan perfecto para ti 🙏",
-    imagen: "tarjeta1.png",
-    color: "#DAA520",
-    fuente: "'Playfair Display', serif"
-  },
-  "2": {
-    texto: "Confía en Él, todo estará bien ✨",
-    imagen: "tarjeta2.png",
-    color: "#2E8B57",
-    fuente: "'Georgia', serif"
-  },
-  "3": {
-    texto: "No estás solo, Dios va contigo 💛",
-    imagen: "tarjeta3.png",
-    color: "#8B0000",
-    fuente: "'Courier New', monospace"
+  const params = new URLSearchParams(window.location.search);
+  const card = params.get("card") || params.get("qr");
+
+  const overlay = document.getElementById("cita-overlay");
+  const img = document.querySelector("#tarjeta-container img");
+  const textarea = document.getElementById("mi-reflexion");
+
+  // 📖 versículos sorpresa
+  const versiculos = [
+    "El Señor es mi pastor, nada me falta. 🙏",
+    "Todo lo puedo en Cristo que me fortalece. ✨",
+    "Dios tiene un plan perfecto para ti 💛",
+    "No temas, yo estoy contigo dice el Señor 🙌",
+    "Confía en Dios y Él actuará 🙏"
+  ];
+
+  function randomVersiculo() {
+    return versiculos[Math.floor(Math.random() * versiculos.length)];
   }
-};
 
-// 🚀 APLICAR CAMBIOS SEGÚN QR
-if (card && tarjetas[card]) {
-  const t = tarjetas[card];
+  const tarjetas = {
+    "1": {
+      imagen: "tarjeta1.png",
+      color: "#DAA520",
+      fuente: "'Playfair Display', serif"
+    },
+    "2": {
+      imagen: "tarjeta2.png",
+      color: "#2E8B57",
+      fuente: "'Georgia', serif"
+    },
+    "3": {
+      imagen: "tarjeta3.png",
+      color: "#8B0000",
+      fuente: "'Courier New', monospace"
+    }
+  };
 
-  overlay.textContent = t.texto;
-  overlay.style.color = t.color;
-  overlay.style.fontFamily = t.fuente;
+  if (card && tarjetas[card]) {
+    const t = tarjetas[card];
 
-  img.src = t.imagen;
-}
+    // 🎯 imagen
+    img.src = t.imagen + "?v=" + Date.now();
+
+    // 🎯 estilo
+    overlay.style.color = t.color;
+    overlay.style.fontFamily = t.fuente;
+
+    // ✨ versículo sorpresa
+    const texto = randomVersiculo();
+    overlay.textContent = texto;
+
+    // 🧠 precargar en textarea para edición/compartir
+    textarea.value = texto;
+  } else {
+    // fallback si no hay QR
+    const texto = randomVersiculo();
+    overlay.textContent = texto;
+    textarea.value = texto;
+  }
+
+});
 </script>
+
+  
 
   
 </body>
