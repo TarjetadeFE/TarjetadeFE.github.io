@@ -180,6 +180,23 @@
   <button id="descarga-btn" class="btn btn-primary w-48">
     Crear y descargar
   </button>
+
+  <button id="whatsapp-btn" class="btn w-48"
+style="
+  background:#25D366;
+  color:white;
+  font-weight:bold;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+">
+  <i class="bi bi-whatsapp"></i>
+  Compartir
+</button>
+  
 <br>
   <br>
   <p style="text-align:center;font-size:12px;color:#7a5c00;margin-top:10px;">
@@ -274,6 +291,49 @@ installBtn.addEventListener("click", async () => {
 
   deferredPrompt = null;
   installBtn.style.display = "none";
+});
+</script>
+
+<script>
+document.getElementById("whatsapp-btn").addEventListener("click", async () => {
+  const tarjeta = document.getElementById("tarjeta-container");
+
+  try {
+    const canvas = await html2canvas(tarjeta, {
+      scale: 2,
+      useCORS: true
+    });
+
+    const image = canvas.toDataURL("image/png");
+
+    const res = await fetch(image);
+    const blob = await res.blob();
+    const file = new File([blob], "tarjeta-fe.png", { type: "image/png" });
+
+    const texto = "Mira lo que aprendí hoy 🙏";
+
+    // 📲 Web Share API (mejor opción)
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          title: "Tarjeta de Fe",
+          text: texto,
+          files: [file]
+        });
+        return;
+      } catch (err) {
+        console.log("Compartir cancelado");
+      }
+    }
+
+    // 🔁 fallback WhatsApp texto
+    const msg = encodeURIComponent(texto);
+    window.open(`https://wa.me/?text=${msg}`, "_blank");
+
+  } catch (error) {
+    console.error(error);
+    alert("No se pudo compartir la imagen");
+  }
 });
 </script>
 
