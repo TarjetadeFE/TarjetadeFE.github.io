@@ -440,6 +440,74 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-  
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const container = document.getElementById("tarjeta-container");
+  const overlay = document.getElementById("cita-overlay");
+
+  if (!container || !overlay) return;
+
+  // 🟤 CREAR FONDO TRANSLÚCIDO (si no existe)
+  let bg = document.getElementById("text-bg");
+
+  if (!bg) {
+    bg = document.createElement("div");
+    bg.id = "text-bg";
+    container.appendChild(bg);
+  }
+
+  // 📦 CONTENEDOR BASE
+  container.style.position = "relative";
+
+  // 🟤 FONDO TRANSLÚCIDO (solo detrás del texto)
+  Object.assign(bg.style, {
+    position: "absolute",
+    inset: "0",
+    background: "rgba(0,0,0,0.35)",
+    zIndex: "1",
+    pointerEvents: "none"
+  });
+
+  // ✍️ TEXTO CENTRADO Y RESPONSIVE
+  Object.assign(overlay.style, {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "85%",
+    maxHeight: "80%",
+
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    textAlign: "center",
+    whiteSpace: "pre-line",
+    wordBreak: "break-word",
+    overflowWrap: "break-word",
+
+    zIndex: "2",
+    color: "#fff",
+    fontFamily: "'Playfair Display', serif",
+    lineHeight: "1.4",
+
+    padding: "10px"
+  });
+
+  // 📱 AJUSTE PARA MÓVILES
+  function adjustMobile() {
+    if (window.innerWidth < 500) {
+      overlay.style.fontSize = "1.2rem";
+    } else {
+      overlay.style.fontSize = "1.6rem";
+    }
+  }
+
+  adjustMobile();
+  window.addEventListener("resize", adjustMobile);
+
+});
+</script>
 </body>
 </html>
