@@ -316,7 +316,7 @@ document.getElementById("whatsapp-btn").addEventListener("click", async () => {
     const blob = await res.blob();
     const file = new File([blob], "tarjeta-fe.png", { type: "image/png" });
 
-    const texto = "Mira lo que aprendí hoy 🙏";
+    const texto = "Hoy aprendí esto en la homilía 🙏 ¿Qué aprendiste tú?";
 
     // 📲 Web Share API (mejor opción)
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
