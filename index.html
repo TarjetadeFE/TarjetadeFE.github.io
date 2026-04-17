@@ -116,15 +116,14 @@
   <div style="font-weight:600;color:#5a3d00;">Tarjetas Bíblicas</div>
 <button id="installBtn" style="
   display:none;
-  padding:6px 10px;
-  border-radius:8px;
   background:#d4af37;
-  color:white;
+  color:#fff;
   border:none;
-  font-size:13px;
-  font-weight:600;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:bold;
 ">
-Instalar
+📲 Instalar App
 </button>
 </div>
 
@@ -157,8 +156,16 @@ Instalar
   <button id="descarga-btn" class="btn btn-primary w-48">
     Crear y descargar
   </button>
+<br>
+  <br>
+  <p style="text-align:center;font-size:12px;color:#7a5c00;margin-top:10px;">
+📱 iPhone: Abrir en Safari → Compartir → “Añadir a pantalla de inicio”
+</p>
 </div>
 
+
+
+  
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <script>
@@ -217,27 +224,34 @@ link.download = `tarjeta-biblica-${count}.png`;
 
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./service-worker.js");
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(() => console.log("Service Worker activo"))
+    .catch(err => console.log("Error SW:", err));
 }
 </script>
 
 <script>
 let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
 
+// Detecta si se puede instalar (Android / Chrome)
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  document.getElementById("installBtn").style.display = "block";
+  installBtn.style.display = "block";
 });
 
-document.getElementById("installBtn").addEventListener("click", async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt = null;
-  }
+// Click instalar
+installBtn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+  const choice = await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
+  installBtn.style.display = "none";
 });
 </script>
-  
 
   
 </body>
