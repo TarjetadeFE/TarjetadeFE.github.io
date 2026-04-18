@@ -3,7 +3,7 @@
   "short_name": "Tarjeta de Fe",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fff8e1",
+  "background_color": "#ffffff",
   "theme_color": "#d4af37",
   "description": "Crea y comparte tarjetas con enseñanzas de la misa",
   "icons": [
