@@ -510,26 +510,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-
-  <!-- 🔥 GALERÍA + MODAL + FOOTER -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // 📦 GALERÍA (FOOTER)
-  // =========================
   const contenedor = document.createElement("div");
-  contenedor.style.marginTop = "40px";
-  contenedor.style.paddingBottom = "20px";
+  contenedor.style.marginTop = "25px";
   contenedor.style.textAlign = "center";
 
   const titulo = document.createElement("h3");
   titulo.textContent = "✨ Diseños especiales";
   titulo.style.color = "#7a5c00";
-  titulo.style.marginBottom = "15px";
+  titulo.style.marginBottom = "10px";
 
   contenedor.appendChild(titulo);
 
+  // 🔥 TODAS TUS TARJETAS (editable fácilmente)
   const tarjetas = [
     "tarjeta2.png",
     "tarjeta3.png",
@@ -539,7 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "tarjeta7.png"
   ];
 
-  tarjetas.forEach(() => {
+  tarjetas.forEach((src, i) => {
 
     const wrapper = document.createElement("div");
     wrapper.style.display = "inline-block";
@@ -547,25 +542,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const img = document.createElement("img");
     img.src = src;
-    img.style.width = "130px"; // 👈 tamaño ideal móvil
-    img.style.margin = "8px";
+    img.style.width = "90px";
+    img.style.margin = "6px";
     img.style.borderRadius = "12px";
-    img.style.opacity = "0.7";
+    img.style.opacity = "0.6";
     img.style.cursor = "pointer";
 
+    // 🔒 etiqueta de bloqueo
     const badge = document.createElement("div");
     badge.textContent = "🔒";
     badge.style.position = "absolute";
-    badge.style.top = "6px";
+    badge.style.top = "5px";
     badge.style.right = "10px";
-    badge.style.fontSize = "16px";
+    badge.style.fontSize = "14px";
 
     wrapper.appendChild(img);
     wrapper.appendChild(badge);
 
     wrapper.onclick = () => {
-      const modal = new bootstrap.Modal(document.getElementById('buyModal'));
-      modal.show();
+      alert(
+        "✨ Diseño especial\n\n" +
+        "Disponible por $10 MXN 🙏\n" +
+        "Pídemelo por WhatsApp"
+      );
     };
 
     contenedor.appendChild(wrapper);
@@ -573,59 +572,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.body.appendChild(contenedor);
 
-  // =========================
-  // 📱 FOOTER TEXTO iPHONE
-  // =========================
-  const footer = document.createElement("div");
-  footer.style.marginTop = "10px";
-  footer.style.textAlign = "center";
-
-  footer.innerHTML = `
-    <p style="font-size:12px;color:#7a5c00;">
-      📱 iPhone: Abrir en Safari → Compartir → “Añadir a pantalla de inicio”
-    </p>
-  `;
-
-  document.body.appendChild(footer);
-
 });
 </script>
-
-<!-- =========================
-🧩 MODAL DE COMPRA
-========================= -->
-<div class="modal fade" id="buyModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="border-radius:16px;">
-
-      <div class="modal-body text-center">
-        <h5 style="color:#7a5c00;">✨ Diseño especial</h5>
-
-        <p style="font-size:14px;color:#5a3d00;">
-          Desbloquea estos diseños exclusivos
-        </p>
-
-        <p style="font-weight:bold;font-size:18px;">
-          💰 $10 MXN
-        </p>
-
-        <p style="font-size:13px;color:#7a5c00;">
-          Te lo activo en minutos 🙏
-        </p>
-
-        <!-- 🔥 BOTÓN WHATSAPP -->
-        <a href="https://wa.me/521XXXXXXXXXX?text=Hola%20quiero%20un%20dise%C3%B1o%20de%20tarjeta%20🙏"
-           target="_blank"
-           class="btn w-100 mb-2"
-           style="background:#25D366;color:white;font-weight:bold;">
-           💬 Pedir por WhatsApp
-        </a>
-
-      </div>
-
-    </div>
-  </div>
-</div>
   
   
 </body>
