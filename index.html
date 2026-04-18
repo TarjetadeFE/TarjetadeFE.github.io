@@ -332,7 +332,7 @@ document.getElementById("whatsapp-btn").addEventListener("click", async () => {
     const blob = await res.blob();
     const file = new File([blob], "tarjeta-fe.png", { type: "image/png" });
 
-    const texto = "Hoy aprendí esto en la homilía 🙏 \n ¿Qué aprendiste tú? \n Aquí puedes crear y compartir tu tarjeta digital 👇\nhttps://tarjetadefe.github.io/  ";
+    const texto = "Hoy aprendí esto en la homilía 🙏 \n ¿Qué aprendiste tú?... \n \nAquí puedes crear y compartir tu tarjeta digital 👇\nhttps://tarjetadefe.github.io/  ";
 
     // 📲 Web Share API (mejor opción)
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
