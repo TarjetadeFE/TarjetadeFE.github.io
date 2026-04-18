@@ -127,7 +127,11 @@
 }
 
 
-
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
     
   </style>
 
@@ -209,7 +213,19 @@ style="
 </div>
 
 
-  <p style="text-align:center;font-size:12px;color:#7a5c00;margin-top:10px;">
+<p style="
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #7a5c00;
+  margin: 0;
+  background: #fff;
+  padding: 5px 0;
+  animation: fadeOut 30s forwards;
+">
 📱 iPhone: Abrir en Safari → Compartir → “Añadir a pantalla de inicio”
 </p>
   
