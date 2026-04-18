@@ -509,5 +509,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const contenedor = document.createElement("div");
+  contenedor.style.marginTop = "20px";
+  contenedor.style.textAlign = "center";
+
+  const titulo = document.createElement("h3");
+  titulo.textContent = "✨ Diseños especiales";
+  titulo.style.color = "#7a5c00";
+
+  contenedor.appendChild(titulo);
+
+  const tarjetas = ["tarjeta2.png","tarjeta3.png","tarjeta4.png"];
+
+  tarjetas.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.style.width = "80px";
+    img.style.margin = "8px";
+    img.style.borderRadius = "10px";
+    img.style.opacity = "0.6";
+    img.style.cursor = "pointer";
+
+    img.onclick = () => {
+      alert("✨ Este diseño está disponible por $10 MXN\nPídemelo por WhatsApp 🙏");
+    };
+
+    contenedor.appendChild(img);
+  });
+
+  document.body.appendChild(contenedor);
+
+});
+</script>
+
+  
 </body>
 </html>
