@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Editorial Digital Viewer</title>
+<title>Catálogo Editorial</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -23,17 +23,17 @@ body{
   font-family:'Inter',sans-serif;
   height:100vh;
   overflow:hidden;
-  background:linear-gradient(135deg,#f7f3ee,#e9e2d6);
+  background:#f4f1ea;
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
-/* TOPBAR */
+/* HEADER */
 
-.topbar{
+.header{
   position:fixed;
-  top:18px;
+  top:20px;
   left:50%;
   transform:translateX(-50%);
   width:min(92vw,900px);
@@ -43,9 +43,9 @@ body{
   z-index:100;
 }
 
-.brand{
-  background:rgba(255,255,255,.75);
-  backdrop-filter:blur(14px);
+.title{
+  background:rgba(255,255,255,.8);
+  backdrop-filter:blur(12px);
   padding:12px 18px;
   border-radius:999px;
   font-weight:600;
@@ -54,12 +54,13 @@ body{
 }
 
 .counter{
-  background:rgba(255,255,255,.75);
-  backdrop-filter:blur(14px);
+  background:rgba(255,255,255,.8);
+  backdrop-filter:blur(12px);
   padding:12px 18px;
   border-radius:999px;
   font-weight:500;
   color:#111;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
 
 /* VIEWER */
@@ -73,65 +74,54 @@ body{
   padding:20px;
 }
 
-/* BOOK */
+/* BOOK (CATÁLOGO FRAME) */
 
 .book{
-  position:relative;
-  width:min(92vw,700px);
+  width:min(92vw,650px);
   height:min(92vh,900px);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* PAGE */
-
-.page{
-  width:100%;
-  height:100%;
   background:white;
   border-radius:18px;
   overflow:hidden;
-  box-shadow:0 25px 60px rgba(0,0,0,.18);
+  box-shadow:0 25px 60px rgba(0,0,0,.15);
   display:flex;
   justify-content:center;
   align-items:center;
-  transition:opacity .25s ease, transform .25s ease;
+  position:relative;
 }
 
 /* IMAGE */
 
-.page img{
-  max-width:100%;
-  max-height:100%;
-  width:auto;
-  height:auto;
+.book img{
+  width:100%;
+  height:100%;
   object-fit:contain;
-  display:block;
+  background:white;
 }
 
-/* CONTROLS */
+/* FOOTER UX BAR */
 
-.controls{
+.footer{
   position:fixed;
   bottom:25px;
   left:50%;
   transform:translateX(-50%);
   display:flex;
-  gap:14px;
+  gap:12px;
+  align-items:center;
 }
 
+/* BUTTONS */
+
 .btn{
-  width:56px;
-  height:56px;
+  width:52px;
+  height:52px;
   border:none;
   border-radius:50%;
   background:white;
-  color:#111;
-  font-size:16px;
   cursor:pointer;
   box-shadow:0 10px 25px rgba(0,0,0,.12);
-  transition:.25s ease;
+  transition:.2s ease;
+  color:#111;
 }
 
 .btn:hover{
@@ -147,12 +137,12 @@ body{
   bottom:95px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(255,255,255,.65);
-  backdrop-filter:blur(14px);
-  padding:10px 16px;
-  border-radius:999px;
   font-size:13px;
-  color:#555;
+  color:#666;
+  background:rgba(255,255,255,.7);
+  padding:10px 14px;
+  border-radius:999px;
+  backdrop-filter:blur(10px);
 }
 
 /* RESPONSIVE */
@@ -161,22 +151,20 @@ body{
   .book{
     width:100vw;
     height:100vh;
-  }
-
-  .page{
     border-radius:0;
   }
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
+<!-- HEADER -->
+<div class="header">
 
-  <div class="brand">Editorial Viewer</div>
+  <div class="title">Catálogo Editorial</div>
 
   <div class="counter">
     <span id="current">1</span> /
@@ -189,13 +177,7 @@ body{
 <div class="viewer">
 
   <div class="book">
-
-    <div class="page" id="page">
-
-      <img id="img" loading="lazy" decoding="async">
-
-    </div>
-
+    <img id="img" src="" loading="lazy" decoding="async">
   </div>
 
 </div>
@@ -204,7 +186,7 @@ body{
 <div class="hint">← → o desliza para navegar</div>
 
 <!-- CONTROLS -->
-<div class="controls">
+<div class="footer">
 
   <button class="btn" id="prev">
     <i class="fa-solid fa-chevron-left"></i>
@@ -219,11 +201,10 @@ body{
 <script>
 
 /* =========================
-   IMÁGENES PNG
+   IMÁGENES PNG LOCALES
 ========================= */
 
 const pages = [
-
 "1.png",
 "2.png",
 "3.png",
@@ -238,14 +219,11 @@ const pages = [
 "12.png",
 "13.png",
 "14.png"
-
 ];
 
 /* ========================= */
 
 const img = document.getElementById("img");
-const page = document.getElementById("page");
-
 const currentText = document.getElementById("current");
 const totalText = document.getElementById("total");
 
@@ -253,7 +231,7 @@ let current = 0;
 
 totalText.innerText = pages.length;
 
-/* PRELOAD (mejora UX) */
+/* PRELOAD ligero */
 pages.forEach(src=>{
   const i = new Image();
   i.src = src;
@@ -262,8 +240,7 @@ pages.forEach(src=>{
 /* RENDER */
 function render(){
 
-  page.style.opacity = ".4";
-  page.style.transform = "scale(.98)";
+  img.style.opacity = "0.5";
 
   const temp = new Image();
   temp.src = pages[current];
@@ -275,15 +252,14 @@ function render(){
     currentText.innerText = current + 1;
 
     requestAnimationFrame(()=>{
-      page.style.opacity = "1";
-      page.style.transform = "scale(1)";
+      img.style.opacity = "1";
     });
 
   };
 
 }
 
-/* NAV */
+/* NEXT */
 function next(){
   if(current < pages.length - 1){
     current++;
@@ -291,6 +267,7 @@ function next(){
   }
 }
 
+/* PREV */
 function prev(){
   if(current > 0){
     current--;
@@ -298,11 +275,11 @@ function prev(){
   }
 }
 
-/* BOTONES */
+/* BUTTONS */
 document.getElementById("next").onclick = next;
 document.getElementById("prev").onclick = prev;
 
-/* TECLADO */
+/* KEYBOARD */
 document.addEventListener("keydown",(e)=>{
   if(e.key === "ArrowRight") next();
   if(e.key === "ArrowLeft") prev();
