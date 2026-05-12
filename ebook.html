@@ -5,11 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Neon Ebook Viewer</title>
+<title>Editorial Portfolio Viewer</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
@@ -20,384 +20,238 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:'Poppins',sans-serif;
 }
 
 body{
+
+  font-family:'Inter',sans-serif;
+
   width:100%;
   height:100vh;
+
+ :0;
+
   overflow:hidden;
 
   background:
-  radial-gradient(circle at top right,#ff00c8 0%,transparent 30%),
-  radial-gradient(circle at bottom left,#00f0ff 0%,transparent 30%),
-  radial-gradient(circle at center,#7928ca 0%,transparent 45%),
-  #030712;
+  radial-gradient(circle at top,#f5f1ea 0%,#e7e0d4 35%,#d8d1c7 100%);
 
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
-/* AMBIENT LIGHT */
-
-.light{
-  position:absolute;
-  width:450px;
-  height:450px;
-  border-radius:999px;
-  filter:blur(140px);
-  z-index:-1;
-  opacity:.4;
-}
-
-.light1{
-  background:#ff00c8;
-  top:-150px;
-  right:-100px;
-}
-
-.light2{
-  background:#00f0ff;
-  bottom:-150px;
-  left:-100px;
-}
-
-/* VIEWER */
+/* CONTAINER */
 
 .viewer{
+
   width:100%;
   height:100vh;
+
+ :relative;
+
   display:flex;
   justify-content:center;
   align-items:center;
-  overflow:hidden;
+
+ :20px;
+
 }
 
 /* BOOK */
 
 .book{
+
   position:relative;
 
-  width:min(92vw,1250px);
-  height:min(88vh,850px);
+  width:min(92vw,1100px);
 
-  perspective:5000px;
-}
+  aspect-ratio:16/10;
 
-/* STATIC LEFT */
+  display:flex;
+  justify-content:center;
+  align-items:center;
 
-.static-left{
-  position:absolute;
-
-  width:50%;
-  height:100%;
-
-  left:0;
-  top:0;
-
-  overflow:hidden;
-
-  border-radius:28px 0 0 28px;
-
-  background:#0f172a;
-
-  border:1px solid rgba(255,255,255,.08);
-
-  box-shadow:
-  0 0 60px rgba(255,0,200,.15),
-  0 20px 60px rgba(0,0,0,.6);
-}
-
-.static-left img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
 }
 
 /* PAGE */
 
 .page{
+
   position:absolute;
 
-  width:50%;
-  height:100%;
+  width:48%;
+  height:92%;
 
-  right:0;
-  top:0;
-
-  transform-origin:left center;
-
-  transform-style:preserve-3d;
-
-  transition:
-  transform 1s cubic-bezier(.77,0,.18,1);
-
-  border-radius:0 28px 28px 0;
-}
-
-/* FLIPPED */
-
-.page.flipped{
-  transform:rotateY(-180deg);
-}
-
-/* SIDE */
-
-.side{
-  position:absolute;
-
-  width:100%;
-  height:100%;
+ :18px;
 
   overflow:hidden;
 
-  backface-visibility:hidden;
-
-  border-radius:0 28px 28px 0;
-}
-
-/* FRONT */
-
-.front{
-
-  background:#111827;
-
-  border:1px solid rgba(255,255,255,.08);
+  background:white;
 
   box-shadow:
-  0 0 50px rgba(0,240,255,.12),
-  0 20px 60px rgba(0,0,0,.6);
+  0 20px 50px rgba(0,0,0,.15);
+
+  transition:
+  transform .55s cubic-bezier(.22,.61,.36,1),
+  opacity .4s ease;
+
+  will-change:transform;
 
 }
 
-/* BACK */
+/* LEFT */
 
-.back{
-  background:#111827;
-  transform:rotateY(180deg);
+.page.left{
+  left:0;
+}
+
+/* RIGHT */
+
+.page.right{
+  right:0;
 }
 
 /* IMG */
 
-.side img{
+.page img{
+
   width:100%;
   height:100%;
-  object-fit:cover;
+
+ -fit:contain;
+
+  background:#fff;
 }
 
-/* SPINE */
+/* CENTER SHADOW */
 
 .spine{
+
   position:absolute;
 
-  left:50%;
-  top:0;
+  width:2px;
+  height:90%;
 
-  transform:translateX(-50%);
+ :#000;
 
-  width:10px;
-  height:100%;
+  opacity:.08;
 
-  background:
-  linear-gradient(
-    to right,
-    rgba(255,255,255,.15),
-    rgba(0,0,0,.5),
-    rgba(255,255,255,.15)
-  );
-
-  z-index:999;
-}
-
-/* TOPBAR */
-
-.topbar{
-  position:fixed;
-
-  top:20px;
   left:50%;
 
-  transform:translateX(-50%);
-
-  width:min(92vw,1250px);
-
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-
-  z-index:99999;
-}
-
-/* LOGO */
-
-.logo{
-  color:white;
-  font-size:24px;
-  font-weight:700;
-
-  padding:14px 24px;
-
-  border-radius:999px;
-
-  background:rgba(255,255,255,.08);
-
-  backdrop-filter:blur(20px);
-
-  border:1px solid rgba(255,255,255,.08);
-
-  box-shadow:
-  0 0 30px rgba(255,0,200,.15);
-}
-
-.logo span{
-  color:#00f0ff;
-}
-
-/* COUNTER */
-
-.counter{
-  color:white;
-
-  padding:14px 24px;
-
-  border-radius:999px;
-
-  background:rgba(255,255,255,.08);
-
-  backdrop-filter:blur(20px);
-
-  border:1px solid rgba(255,255,255,.08);
-
-  font-weight:600;
-
-  box-shadow:
-  0 0 30px rgba(0,240,255,.15);
+ :translateX(-50%);
 }
 
 /* CONTROLS */
 
 .controls{
+
   position:fixed;
 
-  bottom:30px;
+ :30px;
+
   left:50%;
 
   transform:translateX(-50%);
 
   display:flex;
-  align-items:center;
-  gap:20px;
+  gap:18px;
 
-  z-index:999999;
+ -index:999;
 }
 
 /* BUTTON */
 
-.btn-ui{
+.btn{
 
-  width:72px;
-  height:72px;
-
-  border-radius:999px;
+  width:58px;
+  height:58px;
 
   border:none;
 
-  color:white;
+  border-radius:999px;
 
-  font-size:24px;
+  background:white;
+
+  color:#111;
+
+  font-size:18px;
 
   cursor:pointer;
 
-  position:relative;
+  transition:.25s ease;
 
-  overflow:hidden;
-
-  background:
-  linear-gradient(
-    135deg,
-    rgba(255,0,200,.9),
-    rgba(0,240,255,.9)
-  );
-
-  box-shadow:
-  0 0 20px rgba(255,0,200,.35),
-  0 0 40px rgba(0,240,255,.25);
-
-  transition:.3s;
+ -shadow:
+  0 10px 25px rgba(0,0,0,.12);
 }
 
-/* HOVER */
+.btn:hover{
 
-.btn-ui:hover{
+  transform:translateY(-3px);
 
-  transform:
-  translateY(-6px)
-  scale(1.08);
+  background:#111;
 
-  box-shadow:
-  0 0 30px rgba(255,0,200,.6),
-  0 0 60px rgba(0,240,255,.4);
-
+  color:white;
 }
 
-/* ACTIVE */
+/* TOPBAR */
 
-.btn-ui:active{
-  transform:scale(.95);
-}
-
-/* BUTTON GLOW */
-
-.btn-ui::before{
-
-  content:"";
-
-  position:absolute;
-
-  width:120px;
-  height:120px;
-
-  background:rgba(255,255,255,.2);
-
-  border-radius:999px;
-
-  top:-20px;
-  left:-90px;
-
-  transition:.5s;
-}
-
-.btn-ui:hover::before{
-  left:90px;
-}
-
-/* PAGE HINT */
-
-.hint{
+.topbar{
 
   position:fixed;
 
-  bottom:120px;
+ :24px;
   left:50%;
 
   transform:translateX(-50%);
 
-  color:white;
+  width:min(92vw,1100px);
 
-  background:rgba(255,255,255,.06);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 
-  border:1px solid rgba(255,255,255,.08);
+-index:999;
+}
+
+/* TITLE */
+
+.brand{
+
+  background:rgba(255,255,255,.7);
 
   backdrop-filter:blur(20px);
 
-  padding:12px 24px;
+  padding:12px 22px;
 
   border-radius:999px;
 
-  font-size:14px;
+  color:#111;
 
-  opacity:.75;
+  font-weight:600;
+
+  letter-spacing:.5px;
+
+  box-shadow:
+  0 10px 30px rgba(0,0,0,.08);
+}
+
+/* COUNTER */
+
+.counter{
+
+  background:rgba(255,255,255,.7);
+
+  backdrop-filter:blur(20px);
+
+  padding:12px 22px;
+
+  border-radius:999px;
+
+  font-weight:600;
+
+  box-shadow:
+  0 10px 30px rgba(0,0,0,.08);
 }
 
 /* MOBILE */
@@ -405,31 +259,31 @@ body{
 @media(max-width:900px){
 
   .book{
+
     width:100vw;
     height:100vh;
+
+    aspect-ratio:auto;
   }
 
-  .page,
-  .static-left{
+  .page{
+
     width:100%;
-    border-radius:0;
+    height:100%;
+
+   -radius:0;
   }
 
-  .side{
-    border-radius:0;
+  .page.left{
+    display:none;
+  }
+
+  .page.right{
+    width:100%;
   }
 
   .spine{
     display:none;
-  }
-
-  .topbar{
-    width:95%;
-  }
-
-  .btn-ui{
-    width:64px;
-    height:64px;
   }
 
 }
@@ -439,20 +293,17 @@ body{
 
 <body>
 
-<div class="light light1"></div>
-<div class="light light2"></div>
-
 <!-- TOPBAR -->
 
 <div class="topbar">
 
-<div class="logo">
-NEON<span>BOOK</span>
+<div class="brand">
+Editorial Portfolio
 </div>
 
 <div class="counter">
-<span id="currentPage">1</span> /
-<span id="totalPages">1</span>
+<span id="current">1</span> /
+<span id="total">1</span>
 </div>
 
 </div>
@@ -461,167 +312,184 @@ NEON<span>BOOK</span>
 
 <div class="viewer">
 
-<div class="book" id="book">
+<div class="book">
 
-<div class="static-left" id="leftPage"></div>
+<div class="page left" id="leftPage"></div>
 
 <div class="spine"></div>
 
-</div>
+<div class="page right" id="rightPage"></div>
 
 </div>
 
-<!-- HINT -->
-
-<div class="hint">
-Usa ← → o desliza para cambiar página
 </div>
 
 <!-- CONTROLS -->
 
 <div class="controls">
 
-<button class="btn-ui" id="prevBtn">
-<i class="fa-solid fa-arrow-left"></i>
+<button class="btn" id="prevBtn">
+<i class="fa-solid fa-chevron-left"></i>
 </button>
 
-<button class="btn-ui" id="nextBtn">
-<i class="fa-solid fa-arrow-right"></i>
+<button class="btn" id="nextBtn">
+<i class="fa-solid fa-chevron-right"></i>
 </button>
 
 </div>
 
 <script>
 
-/* ===================================
-   IMAGENES DEL CATALOGO
-=================================== */
+/* ======================================
+   IMAGENES
+====================================== */
 
 const pages = [
 
-"/1.png",
-
-"/2.png",
-
-"/3.png",
-
-"/4.png",
-
-"/5.png",
-
-"/6.png",
-
-"/7.png",
-
-"/8.png",
-
-"/9.png",
-
-"/10.png",
-
-"/11.png",
-
-"/12.png",
-
-"/13.png",
-
-"/14.png"
+"/1.webp",
+"/2.webp",
+"/3.webp",
+"/4.webp",
+"/5.webp",
+"/6.webp",
+"/7.webp",
+"/8.webp",
+"/9.webp",
+"/10.webp",
+"/11.webp",
+"/12.webp",
+"/13.webp",
+"/14.webp"
 
 ];
 
-/* ===================================
-   INIT
-=================================== */
+/* ======================================
+   ELEMENTS
+====================================== */
 
-const book = document.getElementById("book");
 const leftPage = document.getElementById("leftPage");
+const rightPage = document.getElementById("rightPage");
 
-document.getElementById("totalPages").innerText = pages.length;
+const currentText = document.getElementById("current");
+const totalText = document.getElementById("total");
 
 let current = 0;
 
-/* LEFT PAGE */
+totalText.innerText = pages.length;
 
-leftPage.innerHTML = `
-<img src="${pages[0]}">
-`;
+/* ======================================
+   RENDER
+====================================== */
 
-/* CREATE PAGES */
+function renderPages(){
 
-pages.forEach((img,index)=>{
+  /* LEFT */
 
-  if(index === 0) return;
+  if(window.innerWidth > 900){
 
-  const page = document.createElement("div");
+    leftPage.innerHTML = pages[current]
+    ? `<img loading="lazy" src="${pages[current]}">`
+    : "";
 
-  page.classList.add("page");
+    rightPage.innerHTML = pages[current + 1]
+    ? `<img loading="lazy" src="${pages[current + 1]}">`
+    : "";
 
-  page.style.zIndex = pages.length - index;
+  }else{
 
-  page.innerHTML = `
+    rightPage.innerHTML = pages[current]
+    ? `<img loading="lazy" src="${pages[current]}">`
+    : "";
 
-  <div class="side front">
-    <img src="${img}">
-  </div>
+  }
 
-  <div class="side back">
-    <img src="${img}">
-  </div>
-
-  `;
-
-  book.appendChild(page);
-
-});
-
-const allPages = document.querySelectorAll(".page");
-
-/* ===================================
-   COUNTER
-=================================== */
-
-function updateCounter(){
-
-  document.getElementById("currentPage")
-  .innerText = current + 1;
+  currentText.innerText = current + 1;
 
 }
 
-/* ===================================
+/* ======================================
    NEXT
-=================================== */
+====================================== */
 
 function nextPage(){
 
-  if(current >= allPages.length) return;
+  if(window.innerWidth > 900){
 
-  allPages[current].classList.add("flipped");
+    if(current < pages.length - 2){
 
-  current++;
+      current += 2;
 
-  updateCounter();
+      animatePage();
+
+    }
+
+  }else{
+
+    if(current < pages.length - 1){
+
+      current++;
+
+      animatePage();
+
+    }
+
+  }
 
 }
 
-/* ===================================
+/* ======================================
    PREV
-=================================== */
+====================================== */
 
 function prevPage(){
 
-  if(current <= 0) return;
+  if(window.innerWidth > 900){
 
-  current--;
+    if(current > 0){
 
-  allPages[current].classList.remove("flipped");
+      current -= 2;
 
-  updateCounter();
+      animatePage();
+
+    }
+
+  }else{
+
+    if(current > 0){
+
+      current--;
+
+      animatePage();
+
+    }
+
+  }
 
 }
 
-/* ===================================
+/* ======================================
+   ANIMATION
+====================================== */
+
+function animatePage(){
+
+  rightPage.style.transform = "scale(.96)";
+  rightPage.style.opacity = ".5";
+
+  setTimeout(()=>{
+
+    renderPages();
+
+    rightPage.style.transform = "scale(1)";
+    rightPage.style.opacity = "1";
+
+  },220);
+
+}
+
+/* ======================================
    BUTTONS
-=================================== */
+====================================== */
 
 document.getElementById("nextBtn")
 .addEventListener("click",nextPage);
@@ -629,9 +497,9 @@ document.getElementById("nextBtn")
 document.getElementById("prevBtn")
 .addEventListener("click",prevPage);
 
-/* ===================================
+/* ======================================
    KEYBOARD
-=================================== */
+====================================== */
 
 document.addEventListener("keydown",(e)=>{
 
@@ -645,9 +513,9 @@ document.addEventListener("keydown",(e)=>{
 
 });
 
-/* ===================================
+/* ======================================
    TOUCH
-=================================== */
+====================================== */
 
 let startX = 0;
 
@@ -669,7 +537,17 @@ document.addEventListener("touchend",(e)=>{
 
 });
 
-updateCounter();
+/* ======================================
+   RESIZE
+====================================== */
+
+window.addEventListener("resize",renderPages);
+
+/* ======================================
+   INIT
+====================================== */
+
+renderPages();
 
 </script>
 
