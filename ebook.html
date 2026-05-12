@@ -219,37 +219,27 @@ body{
 <script>
 
 /* =========================
-   IMÁGENES (IMPORTANTE: RUTAS CORRECTAS)
-   OPCIÓN A: misma carpeta
-   OPCIÓN B: /img/
+   IMÁGENES PNG
 ========================= */
 
 const pages = [
 
-"1.webp",
-"2.webp",
-"3.webp",
-"4.webp",
-"5.webp",
-"6.webp",
-"7.webp",
-"8.webp",
-"9.webp",
-"10.webp",
-"11.webp",
-"12.webp",
-"13.webp",
-"14.webp"
+"1.png",
+"2.png",
+"3.png",
+"4.png",
+"5.png",
+"6.png",
+"7.png",
+"8.png",
+"9.png",
+"10.png",
+"11.png",
+"12.png",
+"13.png",
+"14.png"
 
 ];
-
-/* SI USAS CARPETA:
-const pages = [
-"img/1.webp",
-"img/2.webp",
-...
-];
-*/
 
 /* ========================= */
 
@@ -263,7 +253,7 @@ let current = 0;
 
 totalText.innerText = pages.length;
 
-/* PRELOAD */
+/* PRELOAD (mejora UX) */
 pages.forEach(src=>{
   const i = new Image();
   i.src = src;
@@ -293,7 +283,7 @@ function render(){
 
 }
 
-/* NEXT */
+/* NAV */
 function next(){
   if(current < pages.length - 1){
     current++;
@@ -301,7 +291,6 @@ function next(){
   }
 }
 
-/* PREV */
 function prev(){
   if(current > 0){
     current--;
@@ -309,11 +298,11 @@ function prev(){
   }
 }
 
-/* BUTTONS */
+/* BOTONES */
 document.getElementById("next").onclick = next;
 document.getElementById("prev").onclick = prev;
 
-/* KEYBOARD */
+/* TECLADO */
 document.addEventListener("keydown",(e)=>{
   if(e.key === "ArrowRight") next();
   if(e.key === "ArrowLeft") prev();
