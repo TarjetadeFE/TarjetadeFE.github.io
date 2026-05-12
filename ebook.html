@@ -29,7 +29,7 @@ body{
   align-items:center;
 }
 
-/* TOP BAR */
+/* TOPBAR */
 
 .topbar{
   position:fixed;
@@ -44,7 +44,7 @@ body{
 }
 
 .brand{
-  background:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.75);
   backdrop-filter:blur(14px);
   padding:12px 18px;
   border-radius:999px;
@@ -54,7 +54,7 @@ body{
 }
 
 .counter{
-  background:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.75);
   backdrop-filter:blur(14px);
   padding:12px 18px;
   border-radius:999px;
@@ -77,11 +77,11 @@ body{
 
 .book{
   position:relative;
+  width:min(92vw,700px);
+  height:min(92vh,900px);
   display:flex;
   justify-content:center;
   align-items:center;
-  transition:all .35s ease;
-  max-height:92vh;
 }
 
 /* PAGE */
@@ -93,16 +93,21 @@ body{
   border-radius:18px;
   overflow:hidden;
   box-shadow:0 25px 60px rgba(0,0,0,.18);
+  display:flex;
+  justify-content:center;
+  align-items:center;
   transition:opacity .25s ease, transform .25s ease;
 }
 
 /* IMAGE */
 
 .page img{
-  width:100%;
-  height:100%;
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
   object-fit:contain;
-  background:white;
+  display:block;
 }
 
 /* CONTROLS */
@@ -183,7 +188,7 @@ body{
 <!-- VIEWER -->
 <div class="viewer">
 
-  <div class="book" id="book">
+  <div class="book">
 
     <div class="page" id="page">
 
@@ -214,35 +219,42 @@ body{
 <script>
 
 /* =========================
-   IMÁGENES (RECOMENDADO WEBP)
+   IMÁGENES (IMPORTANTE: RUTAS CORRECTAS)
+   OPCIÓN A: misma carpeta
+   OPCIÓN B: /img/
 ========================= */
 
 const pages = [
 
-"/1.webp",
-"/2.webp",
-"/3.webp",
-"/4.webp",
-"/5.webp",
-"/6.webp",
-"/7.webp",
-"/8.webp",
-"/9.webp",
-"/10.webp",
-"/11.webp",
-"/12.webp",
-"/13.webp",
-"/14.webp"
+"1.webp",
+"2.webp",
+"3.webp",
+"4.webp",
+"5.webp",
+"6.webp",
+"7.webp",
+"8.webp",
+"9.webp",
+"10.webp",
+"11.webp",
+"12.webp",
+"13.webp",
+"14.webp"
 
 ];
 
-/* =========================
-   ELEMENTOS
-========================= */
+/* SI USAS CARPETA:
+const pages = [
+"img/1.webp",
+"img/2.webp",
+...
+];
+*/
+
+/* ========================= */
 
 const img = document.getElementById("img");
 const page = document.getElementById("page");
-const book = document.getElementById("book");
 
 const currentText = document.getElementById("current");
 const totalText = document.getElementById("total");
@@ -251,30 +263,13 @@ let current = 0;
 
 totalText.innerText = pages.length;
 
-/* =========================
-   AJUSTE DINÁMICO
-========================= */
+/* PRELOAD */
+pages.forEach(src=>{
+  const i = new Image();
+  i.src = src;
+});
 
-function adjustSize(naturalW, naturalH){
-
-  const ratio = naturalW / naturalH;
-
-  if(ratio < 1){
-    // vertical (libro, editorial)
-    book.style.width = "min(92vw,600px)";
-    book.style.aspectRatio = "2 / 3";
-  }else{
-    // horizontal
-    book.style.width = "min(95vw,1100px)";
-    book.style.aspectRatio = "16 / 10";
-  }
-
-}
-
-/* =========================
-   RENDER
-========================= */
-
+/* RENDER */
 function render(){
 
   page.style.opacity = ".4";
@@ -285,25 +280,20 @@ function render(){
 
   temp.onload = () => {
 
-    adjustSize(temp.naturalWidth, temp.naturalHeight);
-
-    img.src = pages[current];
+    img.src = temp.src;
 
     currentText.innerText = current + 1;
 
-    setTimeout(() => {
+    requestAnimationFrame(()=>{
       page.style.opacity = "1";
       page.style.transform = "scale(1)";
-    }, 120);
+    });
 
   };
 
 }
 
-/* =========================
-   NAVEGACIÓN
-========================= */
-
+/* NEXT */
 function next(){
   if(current < pages.length - 1){
     current++;
@@ -311,6 +301,7 @@ function next(){
   }
 }
 
+/* PREV */
 function prev(){
   if(current > 0){
     current--;
@@ -318,26 +309,17 @@ function prev(){
   }
 }
 
-/* =========================
-   BOTONES
-========================= */
-
+/* BUTTONS */
 document.getElementById("next").onclick = next;
 document.getElementById("prev").onclick = prev;
 
-/* =========================
-   TECLADO
-========================= */
-
+/* KEYBOARD */
 document.addEventListener("keydown",(e)=>{
   if(e.key === "ArrowRight") next();
   if(e.key === "ArrowLeft") prev();
 });
 
-/* =========================
-   TOUCH
-========================= */
-
+/* TOUCH */
 let startX = 0;
 
 document.addEventListener("touchstart",(e)=>{
@@ -351,10 +333,7 @@ document.addEventListener("touchend",(e)=>{
   if(endX - startX > 50) prev();
 });
 
-/* =========================
-   INIT
-========================= */
-
+/* INIT */
 render();
 
 </script>
