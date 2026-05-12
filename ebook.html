@@ -5,11 +5,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Premium Ebook Viewer</title>
+<title>Neon Ebook Viewer</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
 <style>
 
@@ -24,20 +27,45 @@ body{
   width:100%;
   height:100vh;
   overflow:hidden;
+
   background:
-  radial-gradient(circle at top right,#312e81 0%,transparent 30%),
-  radial-gradient(circle at bottom left,#0f766e 0%,transparent 30%),
-  #020617;
+  radial-gradient(circle at top right,#ff00c8 0%,transparent 30%),
+  radial-gradient(circle at bottom left,#00f0ff 0%,transparent 30%),
+  radial-gradient(circle at center,#7928ca 0%,transparent 45%),
+  #030712;
 
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
-/* CONTAINER */
+/* AMBIENT LIGHT */
+
+.light{
+  position:absolute;
+  width:450px;
+  height:450px;
+  border-radius:999px;
+  filter:blur(140px);
+  z-index:-1;
+  opacity:.4;
+}
+
+.light1{
+  background:#ff00c8;
+  top:-150px;
+  right:-100px;
+}
+
+.light2{
+  background:#00f0ff;
+  bottom:-150px;
+  left:-100px;
+}
+
+/* VIEWER */
 
 .viewer{
-  position:relative;
   width:100%;
   height:100vh;
   display:flex;
@@ -50,27 +78,62 @@ body{
 
 .book{
   position:relative;
-  width:min(90vw,1200px);
-  height:min(88vh,800px);
-  perspective:4000px;
+
+  width:min(92vw,1250px);
+  height:min(88vh,850px);
+
+  perspective:5000px;
+}
+
+/* STATIC LEFT */
+
+.static-left{
+  position:absolute;
+
+  width:50%;
+  height:100%;
+
+  left:0;
+  top:0;
+
+  overflow:hidden;
+
+  border-radius:28px 0 0 28px;
+
+  background:#0f172a;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+  0 0 60px rgba(255,0,200,.15),
+  0 20px 60px rgba(0,0,0,.6);
+}
+
+.static-left img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
 /* PAGE */
 
 .page{
   position:absolute;
+
   width:50%;
   height:100%;
-  top:0;
+
   right:0;
+  top:0;
 
   transform-origin:left center;
+
   transform-style:preserve-3d;
 
   transition:
-  transform 1s cubic-bezier(.65,.05,.36,1);
+  transform 1s cubic-bezier(.77,0,.18,1);
 
-  border-radius:0 20px 20px 0;
+  border-radius:0 28px 28px 0;
 }
 
 /* FLIPPED */
@@ -83,30 +146,39 @@ body{
 
 .side{
   position:absolute;
+
   width:100%;
   height:100%;
-  backface-visibility:hidden;
+
   overflow:hidden;
-  border-radius:0 20px 20px 0;
+
+  backface-visibility:hidden;
+
+  border-radius:0 28px 28px 0;
 }
 
 /* FRONT */
 
 .front{
+
   background:#111827;
+
+  border:1px solid rgba(255,255,255,.08);
+
   box-shadow:
-  inset 0 0 0 1px rgba(255,255,255,.05),
-  0 10px 40px rgba(0,0,0,.5);
+  0 0 50px rgba(0,240,255,.12),
+  0 20px 60px rgba(0,0,0,.6);
+
 }
 
 /* BACK */
 
 .back{
-  background:#0f172a;
+  background:#111827;
   transform:rotateY(180deg);
 }
 
-/* IMAGES */
+/* IMG */
 
 .side img{
   width:100%;
@@ -114,113 +186,218 @@ body{
   object-fit:cover;
 }
 
-/* LEFT STATIC PAGE */
-
-.static-left{
-  position:absolute;
-  width:50%;
-  height:100%;
-  left:0;
-  top:0;
-
-  border-radius:20px 0 0 20px;
-
-  overflow:hidden;
-
-  background:#111827;
-
-  box-shadow:
-  inset 0 0 0 1px rgba(255,255,255,.05),
-  0 10px 40px rgba(0,0,0,.5);
-}
-
-.static-left img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-/* CENTER SPINE */
+/* SPINE */
 
 .spine{
   position:absolute;
+
   left:50%;
   top:0;
-  width:8px;
-  height:100%;
 
   transform:translateX(-50%);
+
+  width:10px;
+  height:100%;
 
   background:
   linear-gradient(
     to right,
-    rgba(255,255,255,.08),
-    rgba(0,0,0,.4),
-    rgba(255,255,255,.08)
+    rgba(255,255,255,.15),
+    rgba(0,0,0,.5),
+    rgba(255,255,255,.15)
   );
 
   z-index:999;
+}
+
+/* TOPBAR */
+
+.topbar{
+  position:fixed;
+
+  top:20px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  width:min(92vw,1250px);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  z-index:99999;
+}
+
+/* LOGO */
+
+.logo{
+  color:white;
+  font-size:24px;
+  font-weight:700;
+
+  padding:14px 24px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.08);
+
+  backdrop-filter:blur(20px);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  box-shadow:
+  0 0 30px rgba(255,0,200,.15);
+}
+
+.logo span{
+  color:#00f0ff;
+}
+
+/* COUNTER */
+
+.counter{
+  color:white;
+
+  padding:14px 24px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.08);
+
+  backdrop-filter:blur(20px);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  font-weight:600;
+
+  box-shadow:
+  0 0 30px rgba(0,240,255,.15);
 }
 
 /* CONTROLS */
 
 .controls{
   position:fixed;
+
   bottom:30px;
   left:50%;
+
   transform:translateX(-50%);
+
   display:flex;
+  align-items:center;
   gap:20px;
-  z-index:9999;
+
+  z-index:999999;
 }
 
-.btn{
-  width:60px;
-  height:60px;
+/* BUTTON */
+
+.btn-ui{
+
+  width:72px;
+  height:72px;
+
   border-radius:999px;
 
-  background:rgba(255,255,255,.08);
-
-  backdrop-filter:blur(20px);
-
-  border:1px solid rgba(255,255,255,.1);
+  border:none;
 
   color:white;
 
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  font-size:24px;
 
   cursor:pointer;
+
+  position:relative;
+
+  overflow:hidden;
+
+  background:
+  linear-gradient(
+    135deg,
+    rgba(255,0,200,.9),
+    rgba(0,240,255,.9)
+  );
+
+  box-shadow:
+  0 0 20px rgba(255,0,200,.35),
+  0 0 40px rgba(0,240,255,.25);
 
   transition:.3s;
 }
 
-.btn:hover{
-  transform:scale(1.1);
-  background:#7c3aed;
+/* HOVER */
+
+.btn-ui:hover{
+
+  transform:
+  translateY(-6px)
+  scale(1.08);
+
+  box-shadow:
+  0 0 30px rgba(255,0,200,.6),
+  0 0 60px rgba(0,240,255,.4);
+
 }
 
-/* COUNTER */
+/* ACTIVE */
 
-.counter{
-  position:fixed;
-  top:30px;
-  right:30px;
+.btn-ui:active{
+  transform:scale(.95);
+}
 
-  background:rgba(255,255,255,.08);
+/* BUTTON GLOW */
 
-  border:1px solid rgba(255,255,255,.1);
+.btn-ui::before{
 
-  backdrop-filter:blur(20px);
+  content:"";
 
-  padding:12px 20px;
+  position:absolute;
+
+  width:120px;
+  height:120px;
+
+  background:rgba(255,255,255,.2);
 
   border-radius:999px;
 
+  top:-20px;
+  left:-90px;
+
+  transition:.5s;
+}
+
+.btn-ui:hover::before{
+  left:90px;
+}
+
+/* PAGE HINT */
+
+.hint{
+
+  position:fixed;
+
+  bottom:120px;
+  left:50%;
+
+  transform:translateX(-50%);
+
   color:white;
 
-  font-weight:600;
+  background:rgba(255,255,255,.06);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  backdrop-filter:blur(20px);
+
+  padding:12px 24px;
+
+  border-radius:999px;
+
+  font-size:14px;
+
+  opacity:.75;
 }
 
 /* MOBILE */
@@ -238,17 +415,21 @@ body{
     border-radius:0;
   }
 
-  .page{
-    left:0;
-  }
-
-  .side,
-  .static-left{
+  .side{
     border-radius:0;
   }
 
   .spine{
     display:none;
+  }
+
+  .topbar{
+    width:95%;
+  }
+
+  .btn-ui{
+    width:64px;
+    height:64px;
   }
 
 }
@@ -257,6 +438,26 @@ body{
 </head>
 
 <body>
+
+<div class="light light1"></div>
+<div class="light light2"></div>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div class="logo">
+NEON<span>BOOK</span>
+</div>
+
+<div class="counter">
+<span id="currentPage">1</span> /
+<span id="totalPages">1</span>
+</div>
+
+</div>
+
+<!-- VIEWER -->
 
 <div class="viewer">
 
@@ -270,28 +471,31 @@ body{
 
 </div>
 
-<div class="counter">
-<span id="currentPage">1</span> /
-<span id="totalPages">1</span>
+<!-- HINT -->
+
+<div class="hint">
+Usa ← → o desliza para cambiar página
 </div>
+
+<!-- CONTROLS -->
 
 <div class="controls">
 
-<div class="btn" id="prevBtn">
-◀
-</div>
+<button class="btn-ui" id="prevBtn">
+<i class="fa-solid fa-arrow-left"></i>
+</button>
 
-<div class="btn" id="nextBtn">
-▶
-</div>
+<button class="btn-ui" id="nextBtn">
+<i class="fa-solid fa-arrow-right"></i>
+</button>
 
 </div>
 
 <script>
 
-/* ======================================
-   AQUI AGREGAS TUS IMAGENES
-====================================== */
+/* ===================================
+   IMAGENES DEL CATALOGO
+=================================== */
 
 const pages = [
 
@@ -307,9 +511,9 @@ const pages = [
 
 ];
 
-/* ======================================
+/* ===================================
    INIT
-====================================== */
+=================================== */
 
 const book = document.getElementById("book");
 const leftPage = document.getElementById("leftPage");
@@ -354,9 +558,9 @@ pages.forEach((img,index)=>{
 
 const allPages = document.querySelectorAll(".page");
 
-/* ======================================
-   UPDATE
-====================================== */
+/* ===================================
+   COUNTER
+=================================== */
 
 function updateCounter(){
 
@@ -365,9 +569,9 @@ function updateCounter(){
 
 }
 
-/* ======================================
+/* ===================================
    NEXT
-====================================== */
+=================================== */
 
 function nextPage(){
 
@@ -381,9 +585,9 @@ function nextPage(){
 
 }
 
-/* ======================================
+/* ===================================
    PREV
-====================================== */
+=================================== */
 
 function prevPage(){
 
@@ -397,9 +601,9 @@ function prevPage(){
 
 }
 
-/* ======================================
+/* ===================================
    BUTTONS
-====================================== */
+=================================== */
 
 document.getElementById("nextBtn")
 .addEventListener("click",nextPage);
@@ -407,9 +611,9 @@ document.getElementById("nextBtn")
 document.getElementById("prevBtn")
 .addEventListener("click",prevPage);
 
-/* ======================================
+/* ===================================
    KEYBOARD
-====================================== */
+=================================== */
 
 document.addEventListener("keydown",(e)=>{
 
@@ -423,9 +627,9 @@ document.addEventListener("keydown",(e)=>{
 
 });
 
-/* ======================================
+/* ===================================
    TOUCH
-====================================== */
+=================================== */
 
 let startX = 0;
 
