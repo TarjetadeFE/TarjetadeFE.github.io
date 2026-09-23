@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mensajes de Emergencia</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="theme-color" content="#dc2626">
+
+    <style>
+        body {
+            background: #f3f4f6;
+        }
+
+        .app-card {
+            max-width: 650px;
+            margin: auto;
+        }
+
+        .message-preview {
+            white-space: pre-line;
+            min-height: 150px;
+        }
+
+        .btn-install {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <!-- ENCABEZADO -->
+    <div class="app-card">
+
+        <div class="bg-danger text-white rounded-4 p-4 shadow mb-4">
+            <h1 class="h3 fw-bold mb-2">
+                🚨 Mensajes de Emergencia
+            </h1>
+
+            <p class="mb-0">
+                Completa los datos y envía rápidamente un mensaje por WhatsApp.
+            </p>
+        </div>
+
+
+        <!-- BOTÓN INSTALAR -->
+        <div class="mb-4">
+            <button
+                id="btnInstalar"
+                class="btn btn-dark w-100 btn-lg btn-install"
+            >
+                📲 Instalar aplicación
+            </button>
+        </div>
+
+
+        <!-- FORMULARIO -->
+        <div class="card border-0 shadow rounded-4">
+
+            <div class="card-body p-4">
+
+                <h2 class="h5 fw-bold mb-4">
+                    Datos de la emergencia
+                </h2>
+
+
+                <!-- PLANTILLA -->
+                <div class="mb-3">
+
+                    <label
+                        for="plantilla"
+                        class="form-label fw-semibold"
+                    >
+                        Mensaje predefinido
+                    </label>
+
+                    <select
+                        id="plantilla"
+                        class="form-select form-select-lg"
+                    >
+
+                        <option value="emergencia">
+                            🚨 Emergencia
+                        </option>
+
+                        <option value="accidente">
+                            🚗 Accidente
+                        </option>
+
+                        <option value="persona">
+                            🆘 Persona necesita ayuda
+                        </option>
+
+                        <option value="incendio">
+                            🔥 Incendio
+                        </option>
+
+                        <option value="seguridad">
+                            👮 Situación de seguridad
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CALLE -->
+                <div class="mb-3">
+
+                    <label
+                        for="calle"
+                        class="form-label fw-semibold"
+                    >
+                        Calle / dirección
+                    </label>
+
+                    <input
+                        type="text"
+                        id="calle"
+                        class="form-control form-control-lg"
+                        placeholder="Ej. Av. Reforma #123"
+                    >
+
+                </div>
+
+
+                <!-- EMERGENCIA -->
+                <div class="mb-3">
+
+                    <label
+                        for="emergencia"
+                        class="form-label fw-semibold"
+                    >
+                        Descripción de la emergencia
+                    </label>
+
+                    <textarea
+                        id="emergencia"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Describe brevemente lo que sucede..."
+                    ></textarea>
+
+                </div>
+
+
+                <!-- UBICACIÓN -->
+                <div class="mb-3">
+
+                    <label
+                        for="ubicacion"
+                        class="form-label fw-semibold"
+                    >
+                        Ubicación / enlace de Google Maps
+                    </label>
+
+                    <input
+                        type="text"
+                        id="ubicacion"
+                        class="form-control form-control-lg"
+                        placeholder="https://maps.google.com/..."
+                    >
+
+                </div>
+
+
+                <!-- BOTÓN OBTENER UBICACIÓN -->
+                <button
+                    id="btnUbicacion"
+                    class="btn btn-outline-primary w-100 mb-4"
+                >
+                    📍 Obtener mi ubicación
+                </button>
+
+
+                <!-- VISTA PREVIA -->
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+                        Vista previa del mensaje
+                    </label>
+
+                    <div
+                        id="preview"
+                        class="message-preview bg-light border rounded-3 p-3"
+                    >
+                        Completa los datos para generar el mensaje.
+                    </div>
+
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="d-grid gap-2">
+
+                    <button
+                        id="btnGenerar"
+                        class="btn btn-primary btn-lg"
+                    >
+                        📝 Generar mensaje
+                    </button>
+
+                    <button
+                        id="btnWhatsApp"
+                        class="btn btn-success btn-lg"
+                    >
+                        📱 Abrir WhatsApp
+                    </button>
+
+                    <button
+                        id="btnCopiar"
+                        class="btn btn-outline-secondary"
+                    >
+                        📋 Copiar mensaje
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMACIÓN -->
+        <div class="alert alert-warning mt-4">
+            <strong>Importante:</strong>
+            WhatsApp abrirá el mensaje preparado. Deberás seleccionar el
+            grupo o contacto y confirmar el envío.
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+    |--------------------------------------------------------------------------
+    | REGISTRO DEL SERVICE WORKER
+    |--------------------------------------------------------------------------
+    */
+
+    if ("serviceWorker" in navigator) {
+
+        window.addEventListener("load", () => {
+
+            navigator.serviceWorker
+                .register("sw.js")
+                .then(() => {
+                    console.log("Service Worker registrado");
+                })
+                .catch(error => {
+                    console.error(
+                        "Error registrando Service Worker:",
+                        error
+                    );
+                });
+
+        });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VARIABLES
+    |--------------------------------------------------------------------------
+    */
+
+    let deferredPrompt = null;
+
+    const btnInstalar = document.getElementById("btnInstalar");
+    const btnUbicacion = document.getElementById("btnUbicacion");
+    const btnGenerar = document.getElementById("btnGenerar");
+    const btnWhatsApp = document.getElementById("btnWhatsApp");
+    const btnCopiar = document.getElementById("btnCopiar");
+
+    const plantilla = document.getElementById("plantilla");
+    const calle = document.getElementById("calle");
+    const emergencia = document.getElementById("emergencia");
+    const ubicacion = document.getElementById("ubicacion");
+    const preview = document.getElementById("preview");
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PLANTILLAS
+    |--------------------------------------------------------------------------
+    */
+
+    const plantillas = {
+
+        emergencia: (datos) => `
+🚨 *EMERGENCIA*
+
+📍 Calle:
+${datos.calle}
+
+🆘 Situación:
+${datos.emergencia}
+
+🌎 Ubicación:
+${datos.ubicacion}
+
+⚠️ Se solicita apoyo.
+        `,
+
+        accidente: (datos) => `
+🚗 *ACCIDENTE*
+
+📍 Calle:
+${datos.calle}
+
+🆘 Detalles:
+${datos.emergencia}
+
+🌎 Ubicación:
+${datos.ubicacion}
+
+⚠️ Se requiere atención.
+        `,
+
+        persona: (datos) => `
+🆘 *PERSONA NECESITA AYUDA*
+
+📍 Calle:
+${datos.calle}
+
+📝 Situación:
+${datos.emergencia}
+
+🌎 Ubicación:
+${datos.ubicacion}
+
+Por favor, acudir al lugar.
+        `,
+
+        incendio: (datos) => `
+🔥 *INCENDIO*
+
+📍 Calle:
+${datos.calle}
+
+📝 Descripción:
+${datos.emergencia}
+
+🌎 Ubicación:
+${datos.ubicacion}
+
+🚨 Se solicita atención inmediata.
+        `,
+
+        seguridad: (datos) => `
+👮 *SITUACIÓN DE SEGURIDAD*
+
+📍 Calle:
+${datos.calle}
+
+📝 Situación:
+${datos.emergencia}
+
+🌎 Ubicación:
+${datos.ubicacion}
+
+⚠️ Se solicita apoyo.
+        `
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OBTENER DATOS
+    |--------------------------------------------------------------------------
+    */
+
+    function obtenerDatos() {
+
+        return {
+
+            calle:
+                calle.value.trim() ||
+                "No especificada",
+
+            emergencia:
+                emergencia.value.trim() ||
+                "No especificada",
+
+            ubicacion:
+                ubicacion.value.trim() ||
+                "No especificada"
+
+        };
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GENERAR MENSAJE
+    |--------------------------------------------------------------------------
+    */
+
+    function generarMensaje() {
+
+        const datos = obtenerDatos();
+
+        const tipo = plantilla.value;
+
+        return plantillas[tipo](datos)
+            .trim();
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MOSTRAR PREVIEW
+    |--------------------------------------------------------------------------
+    */
+
+    function actualizarPreview() {
+
+        preview.textContent = generarMensaje();
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BOTÓN GENERAR
+    |--------------------------------------------------------------------------
+    */
+
+    btnGenerar.addEventListener("click", () => {
+
+        actualizarPreview();
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACTUALIZAR AUTOMÁTICAMENTE
+    |--------------------------------------------------------------------------
+    */
+
+    [
+        plantilla,
+        calle,
+        emergencia,
+        ubicacion
+    ].forEach(element => {
+
+        element.addEventListener(
+            "input",
+            actualizarPreview
+        );
+
+        element.addEventListener(
+            "change",
+            actualizarPreview
+        );
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | WHATSAPP
+    |--------------------------------------------------------------------------
+    */
+
+    btnWhatsApp.addEventListener("click", () => {
+
+        const mensaje = generarMensaje();
+
+        const url =
+            "https://wa.me/?text=" +
+            encodeURIComponent(mensaje);
+
+        window.open(
+            url,
+            "_blank"
+        );
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | COPIAR
+    |--------------------------------------------------------------------------
+    */
+
+    btnCopiar.addEventListener("click", async () => {
+
+        const mensaje = generarMensaje();
+
+        try {
+
+            await navigator.clipboard.writeText(mensaje);
+
+            btnCopiar.textContent =
+                "✅ Mensaje copiado";
+
+            setTimeout(() => {
+
+                btnCopiar.textContent =
+                    "📋 Copiar mensaje";
+
+            }, 2000);
+
+        } catch (error) {
+
+            alert(
+                "No fue posible copiar el mensaje."
+            );
+
+        }
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GEOLOCALIZACIÓN
+    |--------------------------------------------------------------------------
+    */
+
+    btnUbicacion.addEventListener("click", () => {
+
+        if (!navigator.geolocation) {
+
+            alert(
+                "Tu navegador no permite obtener la ubicación."
+            );
+
+            return;
+
+        }
+
+        btnUbicacion.disabled = true;
+
+        btnUbicacion.textContent =
+            "📍 Obteniendo ubicación...";
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            position => {
+
+                const lat =
+                    position.coords.latitude;
+
+                const lon =
+                    position.coords.longitude;
+
+
+                const mapsUrl =
+                    `https://www.google.com/maps?q=${lat},${lon}`;
+
+
+                ubicacion.value =
+                    mapsUrl;
+
+
+                actualizarPreview();
+
+
+                btnUbicacion.disabled = false;
+
+                btnUbicacion.textContent =
+                    "📍 Ubicación obtenida";
+
+            },
+
+            error => {
+
+                console.error(error);
+
+                alert(
+                    "No fue posible obtener tu ubicación. " +
+                    "Verifica los permisos de ubicación."
+                );
+
+                btnUbicacion.disabled = false;
+
+                btnUbicacion.textContent =
+                    "📍 Obtener mi ubicación";
+
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+
+        );
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INSTALACIÓN PWA
+    |--------------------------------------------------------------------------
+    */
+
+    window.addEventListener(
+        "beforeinstallprompt",
+        event => {
+
+            event.preventDefault();
+
+            deferredPrompt = event;
+
+            btnInstalar.style.display =
+                "block";
+
+        }
+    );
+
+
+    btnInstalar.addEventListener(
+        "click",
+        async () => {
+
+            if (!deferredPrompt) {
+
+                alert(
+                    "La instalación no está disponible " +
+                    "en este momento. Si ya instalaste la aplicación, " +
+                    "puedes abrirla desde tu dispositivo."
+                );
+
+                return;
+
+            }
+
+
+            deferredPrompt.prompt();
+
+
+            const {
+                outcome
+            } = await deferredPrompt.userChoice;
+
+
+            console.log(
+                "Resultado instalación:",
+                outcome
+            );
+
+
+            deferredPrompt = null;
+
+            btnInstalar.style.display =
+                "none";
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INSTALACIÓN COMPLETADA
+    |--------------------------------------------------------------------------
+    */
+
+    window.addEventListener(
+        "appinstalled",
+        () => {
+
+            console.log(
+                "Aplicación instalada correctamente"
+            );
+
+            btnInstalar.style.display =
+                "none";
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MENSAJE INICIAL
+    |--------------------------------------------------------------------------
+    */
+
+    actualizarPreview();
+
+</script>
+
+</body>
+</html>
