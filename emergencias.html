@@ -1,711 +1,658 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-    <title>Mensajes de Emergencia</title>
+  <title>Auxilio Rápido</title>
 
-    <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="manifest" href="manifest.json">
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#111827">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <meta name="theme-color" content="#dc2626">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-    <style>
-        body {
-            background: #f3f4f6;
-        }
+    body {
+      margin: 0;
+      background: #f1f5f9;
+      color: #111827;
+      min-height: 100dvh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   sans-serif;
+    }
 
-        .app-card {
-            max-width: 650px;
-            margin: auto;
-        }
+    .app {
+      width: 100%;
+      max-width: 620px;
+      margin: auto;
+      padding: 12px;
+      padding-bottom: 8px;
+    }
 
-        .message-preview {
-            white-space: pre-line;
-            min-height: 150px;
-        }
+    .header {
+      background: #111827;
+      color: white;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 5px 15px rgba(0,0,0,.12);
+    }
 
-        .btn-install {
-            display: none;
-        }
-    </style>
+    .header h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .header p {
+      margin: 3px 0 0;
+      font-size: .85rem;
+      opacity: .8;
+    }
+
+    .section-title {
+      font-size: .82rem;
+      font-weight: 800;
+      margin: 18px 4px 8px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .card-emergency {
+      border: 0;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+      transition: transform .1s;
+    }
+
+    .card-emergency:active {
+      transform: scale(.985);
+    }
+
+    .card-body {
+      padding: 15px;
+    }
+
+    .priority-red {
+      border-left: 7px solid #dc2626;
+    }
+
+    .priority-orange {
+      border-left: 7px solid #f97316;
+    }
+
+    .priority-yellow {
+      border-left: 7px solid #eab308;
+    }
+
+    .emergency-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+
+    .emergency-text {
+      font-size: .84rem;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+
+    .btn-action {
+      min-height: 46px;
+      border-radius: 12px;
+      font-weight: 750;
+    }
+
+    .btn-location {
+      min-width: 55px;
+    }
+
+    footer {
+      text-align: center;
+      color: #64748b;
+      font-size: .68rem;
+      line-height: 1.35;
+      padding: 8px 5px 4px;
+    }
+
+    .install-btn {
+      display: none;
+    }
+
+    /* Evita selección accidental al pulsar rápidamente */
+    button,
+    .card-emergency {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container py-4">
+<div class="app">
 
-    <!-- ENCABEZADO -->
-    <div class="app-card">
+  <!-- ENCABEZADO -->
+  <header class="header">
 
-        <div class="bg-danger text-white rounded-4 p-4 shadow mb-4">
-            <h1 class="h3 fw-bold mb-2">
-                🚨 Mensajes de Emergencia
-            </h1>
+    <div class="d-flex justify-content-between align-items-center">
 
-            <p class="mb-0">
-                Completa los datos y envía rápidamente un mensaje por WhatsApp.
-            </p>
-        </div>
+      <div>
+        <h1>🚨 Auxilio Rápido</h1>
+        <p>Selecciona una situación para preparar el mensaje</p>
+      </div>
 
-
-        <!-- BOTÓN INSTALAR -->
-        <div class="mb-4">
-            <button
-                id="btnInstalar"
-                class="btn btn-dark w-100 btn-lg btn-install"
-            >
-                📲 Instalar aplicación
-            </button>
-        </div>
-
-
-        <!-- FORMULARIO -->
-        <div class="card border-0 shadow rounded-4">
-
-            <div class="card-body p-4">
-
-                <h2 class="h5 fw-bold mb-4">
-                    Datos de la emergencia
-                </h2>
-
-
-                <!-- PLANTILLA -->
-                <div class="mb-3">
-
-                    <label
-                        for="plantilla"
-                        class="form-label fw-semibold"
-                    >
-                        Mensaje predefinido
-                    </label>
-
-                    <select
-                        id="plantilla"
-                        class="form-select form-select-lg"
-                    >
-
-                        <option value="emergencia">
-                            🚨 Emergencia
-                        </option>
-
-                        <option value="accidente">
-                            🚗 Accidente
-                        </option>
-
-                        <option value="persona">
-                            🆘 Persona necesita ayuda
-                        </option>
-
-                        <option value="incendio">
-                            🔥 Incendio
-                        </option>
-
-                        <option value="seguridad">
-                            👮 Situación de seguridad
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- CALLE -->
-                <div class="mb-3">
-
-                    <label
-                        for="calle"
-                        class="form-label fw-semibold"
-                    >
-                        Calle / dirección
-                    </label>
-
-                    <input
-                        type="text"
-                        id="calle"
-                        class="form-control form-control-lg"
-                        placeholder="Ej. Av. Reforma #123"
-                    >
-
-                </div>
-
-
-                <!-- EMERGENCIA -->
-                <div class="mb-3">
-
-                    <label
-                        for="emergencia"
-                        class="form-label fw-semibold"
-                    >
-                        Descripción de la emergencia
-                    </label>
-
-                    <textarea
-                        id="emergencia"
-                        class="form-control"
-                        rows="3"
-                        placeholder="Describe brevemente lo que sucede..."
-                    ></textarea>
-
-                </div>
-
-
-                <!-- UBICACIÓN -->
-                <div class="mb-3">
-
-                    <label
-                        for="ubicacion"
-                        class="form-label fw-semibold"
-                    >
-                        Ubicación / enlace de Google Maps
-                    </label>
-
-                    <input
-                        type="text"
-                        id="ubicacion"
-                        class="form-control form-control-lg"
-                        placeholder="https://maps.google.com/..."
-                    >
-
-                </div>
-
-
-                <!-- BOTÓN OBTENER UBICACIÓN -->
-                <button
-                    id="btnUbicacion"
-                    class="btn btn-outline-primary w-100 mb-4"
-                >
-                    📍 Obtener mi ubicación
-                </button>
-
-
-                <!-- VISTA PREVIA -->
-                <div class="mb-4">
-
-                    <label class="form-label fw-semibold">
-                        Vista previa del mensaje
-                    </label>
-
-                    <div
-                        id="preview"
-                        class="message-preview bg-light border rounded-3 p-3"
-                    >
-                        Completa los datos para generar el mensaje.
-                    </div>
-
-                </div>
-
-
-                <!-- BOTONES -->
-                <div class="d-grid gap-2">
-
-                    <button
-                        id="btnGenerar"
-                        class="btn btn-primary btn-lg"
-                    >
-                        📝 Generar mensaje
-                    </button>
-
-                    <button
-                        id="btnWhatsApp"
-                        class="btn btn-success btn-lg"
-                    >
-                        📱 Abrir WhatsApp
-                    </button>
-
-                    <button
-                        id="btnCopiar"
-                        class="btn btn-outline-secondary"
-                    >
-                        📋 Copiar mensaje
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- INFORMACIÓN -->
-        <div class="alert alert-warning mt-4">
-            <strong>Importante:</strong>
-            WhatsApp abrirá el mensaje preparado. Deberás seleccionar el
-            grupo o contacto y confirmar el envío.
-        </div>
+      <button
+        id="btnInstalar"
+        class="btn btn-light btn-sm install-btn">
+        📲
+      </button>
 
     </div>
+
+  </header>
+
+
+  <!-- PRIORIDAD INMEDIATA -->
+
+  <div class="section-title text-danger">
+    🔴 Atención inmediata
+  </div>
+
+
+  <!-- FUGA DE GAS -->
+  <div class="card-emergency priority-red bg-white">
+
+    <div class="card-body">
+
+      <div class="emergency-title">
+        🔥 Fuga de gas
+      </div>
+
+      <div class="emergency-text">
+        Se reporta posible fuga de gas.
+      </div>
+
+      <button
+        class="btn btn-danger btn-action w-100"
+        onclick="enviarMensaje('fugaGas')">
+
+        📲 Enviar
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- INCENDIO -->
+  <div class="card-emergency priority-red bg-white">
+
+    <div class="card-body">
+
+      <div class="emergency-title">
+        🔥 Incendio
+      </div>
+
+      <div class="emergency-text">
+        Se reporta un incendio.
+      </div>
+
+      <button
+        class="btn btn-danger btn-action w-100"
+        onclick="enviarMensaje('incendio')">
+
+        📲 Enviar
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACCIDENTE -->
+  <div class="card-emergency priority-red bg-white">
+
+    <div class="card-body">
+
+      <div class="emergency-title">
+        🏍️ Accidente de moto
+      </div>
+
+      <div class="emergency-text">
+        Se reporta accidente de motocicleta.
+      </div>
+
+      <div class="d-flex gap-2">
+
+        <button
+          class="btn btn-danger btn-action flex-grow-1"
+          onclick="enviarMensaje('accidenteMoto')">
+
+          📲 Enviar
+
+        </button>
+
+        <button
+          class="btn btn-outline-danger btn-action btn-location"
+          onclick="enviarConUbicacion('accidenteMoto', this)"
+          title="Agregar ubicación">
+
+          📍
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PRIORIDAD ALTA -->
+
+  <div class="section-title text-warning">
+    🟠 Atención urgente
+  </div>
+
+
+  <!-- RIÑA -->
+  <div class="card-emergency priority-orange bg-white">
+
+    <div class="card-body">
+
+      <div class="emergency-title">
+        👮 Riña
+      </div>
+
+      <div class="emergency-text">
+        Se solicita apoyo de patrulla por riña.
+      </div>
+
+      <div class="d-flex gap-2">
+
+        <button
+          class="btn btn-warning btn-action flex-grow-1"
+          onclick="enviarMensaje('rina')">
+
+          📲 Enviar
+
+        </button>
+
+        <button
+          class="btn btn-outline-warning btn-action btn-location"
+          onclick="enviarConUbicacion('rina', this)"
+          title="Agregar ubicación">
+
+          📍
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ACOSO -->
+  <div class="card-emergency priority-orange bg-white">
+
+    <div class="card-body">
+
+      <div class="emergency-title">
+        ⚠️ Acoso
+      </div>
+
+      <div class="emergency-text">
+        Se reporta una situación de acoso.
+      </div>
+
+      <div class="d-flex gap-2">
+
+        <button
+          class="btn btn-warning btn-action flex-grow-1"
+          onclick="enviarMensaje('acoso')">
+
+          📲 Enviar
+
+        </button>
+
+        <button
+          class="btn btn-outline-warning btn-action btn-location"
+          onclick="enviarConUbicacion('acoso', this)"
+          title="Agregar ubicación">
+
+          📍
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PERSONA SOSPECHOSA -->
+
+  <div class="section-title text-warning">
+    🟡 Reportes
+  </div>
+
+
+  <div class="card-emergency priority-yellow bg-white">
+
+    <div class="card-body">
+
+      <div class="emergency-title">
+        👤 Persona sospechosa
+      </div>
+
+      <div class="emergency-text">
+        Se reporta una persona sospechosa.
+      </div>
+
+      <div class="d-flex gap-2">
+
+        <button
+          class="btn btn-dark btn-action flex-grow-1"
+          onclick="enviarMensaje('personaSospechosa')">
+
+          📲 Enviar
+
+        </button>
+
+        <button
+          class="btn btn-outline-dark btn-action btn-location"
+          onclick="enviarConUbicacion('personaSospechosa', this)"
+          title="Agregar ubicación">
+
+          📍
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    🔒 No almacenamos tus datos.
+    La ubicación solo se utiliza cuando tú la solicitas.
+    <br>
+    Esta aplicación no sustituye a los servicios oficiales de emergencia.
+
+  </footer>
 
 </div>
 
 
 <script>
 
-    /*
-    |--------------------------------------------------------------------------
-    | REGISTRO DEL SERVICE WORKER
-    |--------------------------------------------------------------------------
-    */
+  /*
+   * ============================================
+   * MENSAJES PREDEFINIDOS
+   * ============================================
+   */
 
-    if ("serviceWorker" in navigator) {
+  const mensajes = {
 
-        window.addEventListener("load", () => {
+    fugaGas:
+      `🔥 FUGA DE GAS
 
-            navigator.serviceWorker
-                .register("sw.js")
-                .then(() => {
-                    console.log("Service Worker registrado");
-                })
-                .catch(error => {
-                    console.error(
-                        "Error registrando Service Worker:",
-                        error
-                    );
-                });
+Se reporta posible fuga de gas.
+Se solicita apoyo.`,
 
-        });
+    incendio:
+      `🔥 INCENDIO
 
+Se reporta un incendio.
+Se solicita apoyo.`,
+
+    accidenteMoto:
+      `🏍️ ACCIDENTE DE MOTOCICLETA
+
+Se reporta accidente de motocicleta.
+Se solicita apoyo.`,
+
+    rina:
+      `👮 APOYO DE PATRULLA
+
+Se solicita apoyo de patrulla por riña.`,
+
+    acoso:
+      `⚠️ ACOSO
+
+Se reporta una situación de acoso.
+Se solicita apoyo.`,
+
+    personaSospechosa:
+      `👤 PERSONA SOSPECHOSA
+
+Se reporta una persona sospechosa.
+Se solicita apoyo.`
+
+  };
+
+
+  /*
+   * ============================================
+   * ENVIAR MENSAJE NORMAL
+   * ============================================
+   */
+
+  function enviarMensaje(tipo) {
+
+    const mensaje = mensajes[tipo];
+
+    if (!mensaje) return;
+
+    abrirWhatsApp(mensaje);
+
+  }
+
+
+  /*
+   * ============================================
+   * OBTENER UBICACIÓN Y ENVIAR
+   * ============================================
+   */
+
+  function enviarConUbicacion(tipo, boton) {
+
+    if (!navigator.geolocation) {
+
+      alert(
+        "Tu dispositivo no permite obtener la ubicación."
+      );
+
+      return;
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | VARIABLES
-    |--------------------------------------------------------------------------
-    */
+    const mensaje = mensajes[tipo];
 
-    let deferredPrompt = null;
+    const textoOriginal = boton.innerHTML;
 
-    const btnInstalar = document.getElementById("btnInstalar");
-    const btnUbicacion = document.getElementById("btnUbicacion");
-    const btnGenerar = document.getElementById("btnGenerar");
-    const btnWhatsApp = document.getElementById("btnWhatsApp");
-    const btnCopiar = document.getElementById("btnCopiar");
-
-    const plantilla = document.getElementById("plantilla");
-    const calle = document.getElementById("calle");
-    const emergencia = document.getElementById("emergencia");
-    const ubicacion = document.getElementById("ubicacion");
-    const preview = document.getElementById("preview");
+    boton.disabled = true;
+    boton.innerHTML = "⌛";
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | PLANTILLAS
-    |--------------------------------------------------------------------------
-    */
+    navigator.geolocation.getCurrentPosition(
 
-    const plantillas = {
+      function(position) {
 
-        emergencia: (datos) => `
-🚨 *EMERGENCIA*
+        const lat =
+          position.coords.latitude;
 
-📍 Calle:
-${datos.calle}
-
-🆘 Situación:
-${datos.emergencia}
-
-🌎 Ubicación:
-${datos.ubicacion}
-
-⚠️ Se solicita apoyo.
-        `,
-
-        accidente: (datos) => `
-🚗 *ACCIDENTE*
-
-📍 Calle:
-${datos.calle}
-
-🆘 Detalles:
-${datos.emergencia}
-
-🌎 Ubicación:
-${datos.ubicacion}
-
-⚠️ Se requiere atención.
-        `,
-
-        persona: (datos) => `
-🆘 *PERSONA NECESITA AYUDA*
-
-📍 Calle:
-${datos.calle}
-
-📝 Situación:
-${datos.emergencia}
-
-🌎 Ubicación:
-${datos.ubicacion}
-
-Por favor, acudir al lugar.
-        `,
-
-        incendio: (datos) => `
-🔥 *INCENDIO*
-
-📍 Calle:
-${datos.calle}
-
-📝 Descripción:
-${datos.emergencia}
-
-🌎 Ubicación:
-${datos.ubicacion}
-
-🚨 Se solicita atención inmediata.
-        `,
-
-        seguridad: (datos) => `
-👮 *SITUACIÓN DE SEGURIDAD*
-
-📍 Calle:
-${datos.calle}
-
-📝 Situación:
-${datos.emergencia}
-
-🌎 Ubicación:
-${datos.ubicacion}
-
-⚠️ Se solicita apoyo.
-        `
-    };
+        const lon =
+          position.coords.longitude;
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | OBTENER DATOS
-    |--------------------------------------------------------------------------
-    */
+        const mapa =
+          `https://maps.google.com/?q=${lat},${lon}`;
 
-    function obtenerDatos() {
 
-        return {
+        const mensajeFinal =
+          mensaje +
+          `\n\n📍 UBICACIÓN:\n${mapa}`;
 
-            calle:
-                calle.value.trim() ||
-                "No especificada",
 
-            emergencia:
-                emergencia.value.trim() ||
-                "No especificada",
+        boton.disabled = false;
+        boton.innerHTML = textoOriginal;
 
-            ubicacion:
-                ubicacion.value.trim() ||
-                "No especificada"
 
-        };
+        abrirWhatsApp(mensajeFinal);
+
+      },
+
+
+      function() {
+
+        boton.disabled = false;
+        boton.innerHTML = textoOriginal;
+
+        alert(
+          "No fue posible obtener la ubicación. " +
+          "Puedes enviar el mensaje sin ubicación."
+        );
+
+      },
+
+
+      {
+        enableHighAccuracy: true,
+        timeout: 8000,
+        maximumAge: 0
+      }
+
+    );
+
+  }
+
+
+  /*
+   * ============================================
+   * ABRIR WHATSAPP
+   * ============================================
+   */
+
+  function abrirWhatsApp(mensaje) {
+
+    const url =
+      "https://wa.me/?text=" +
+      encodeURIComponent(mensaje);
+
+
+    window.location.href = url;
+
+  }
+
+
+  /*
+   * ============================================
+   * INSTALACIÓN PWA
+   * ============================================
+   */
+
+  let deferredPrompt = null;
+
+  const btnInstalar =
+    document.getElementById("btnInstalar");
+
+
+  window.addEventListener(
+    "beforeinstallprompt",
+    function(event) {
+
+      event.preventDefault();
+
+      deferredPrompt = event;
+
+      btnInstalar.style.display =
+        "block";
 
     }
+  );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | GENERAR MENSAJE
-    |--------------------------------------------------------------------------
-    */
+  btnInstalar.addEventListener(
+    "click",
+    async function() {
 
-    function generarMensaje() {
+      if (!deferredPrompt) return;
 
-        const datos = obtenerDatos();
+      deferredPrompt.prompt();
 
-        const tipo = plantilla.value;
+      await deferredPrompt.userChoice;
 
-        return plantillas[tipo](datos)
-            .trim();
+      deferredPrompt = null;
 
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | MOSTRAR PREVIEW
-    |--------------------------------------------------------------------------
-    */
-
-    function actualizarPreview() {
-
-        preview.textContent = generarMensaje();
+      btnInstalar.style.display =
+        "none";
 
     }
+  );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | BOTÓN GENERAR
-    |--------------------------------------------------------------------------
-    */
+  /*
+   * ============================================
+   * SERVICE WORKER
+   * ============================================
+   */
 
-    btnGenerar.addEventListener("click", () => {
-
-        actualizarPreview();
-
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ACTUALIZAR AUTOMÁTICAMENTE
-    |--------------------------------------------------------------------------
-    */
-
-    [
-        plantilla,
-        calle,
-        emergencia,
-        ubicacion
-    ].forEach(element => {
-
-        element.addEventListener(
-            "input",
-            actualizarPreview
-        );
-
-        element.addEventListener(
-            "change",
-            actualizarPreview
-        );
-
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | WHATSAPP
-    |--------------------------------------------------------------------------
-    */
-
-    btnWhatsApp.addEventListener("click", () => {
-
-        const mensaje = generarMensaje();
-
-        const url =
-            "https://wa.me/?text=" +
-            encodeURIComponent(mensaje);
-
-        window.open(
-            url,
-            "_blank"
-        );
-
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | COPIAR
-    |--------------------------------------------------------------------------
-    */
-
-    btnCopiar.addEventListener("click", async () => {
-
-        const mensaje = generarMensaje();
-
-        try {
-
-            await navigator.clipboard.writeText(mensaje);
-
-            btnCopiar.textContent =
-                "✅ Mensaje copiado";
-
-            setTimeout(() => {
-
-                btnCopiar.textContent =
-                    "📋 Copiar mensaje";
-
-            }, 2000);
-
-        } catch (error) {
-
-            alert(
-                "No fue posible copiar el mensaje."
-            );
-
-        }
-
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | GEOLOCALIZACIÓN
-    |--------------------------------------------------------------------------
-    */
-
-    btnUbicacion.addEventListener("click", () => {
-
-        if (!navigator.geolocation) {
-
-            alert(
-                "Tu navegador no permite obtener la ubicación."
-            );
-
-            return;
-
-        }
-
-        btnUbicacion.disabled = true;
-
-        btnUbicacion.textContent =
-            "📍 Obteniendo ubicación...";
-
-
-        navigator.geolocation.getCurrentPosition(
-
-            position => {
-
-                const lat =
-                    position.coords.latitude;
-
-                const lon =
-                    position.coords.longitude;
-
-
-                const mapsUrl =
-                    `https://www.google.com/maps?q=${lat},${lon}`;
-
-
-                ubicacion.value =
-                    mapsUrl;
-
-
-                actualizarPreview();
-
-
-                btnUbicacion.disabled = false;
-
-                btnUbicacion.textContent =
-                    "📍 Ubicación obtenida";
-
-            },
-
-            error => {
-
-                console.error(error);
-
-                alert(
-                    "No fue posible obtener tu ubicación. " +
-                    "Verifica los permisos de ubicación."
-                );
-
-                btnUbicacion.disabled = false;
-
-                btnUbicacion.textContent =
-                    "📍 Obtener mi ubicación";
-
-            },
-
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-
-        );
-
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | INSTALACIÓN PWA
-    |--------------------------------------------------------------------------
-    */
+  if ("serviceWorker" in navigator) {
 
     window.addEventListener(
-        "beforeinstallprompt",
-        event => {
+      "load",
+      function() {
 
-            event.preventDefault();
-
-            deferredPrompt = event;
-
-            btnInstalar.style.display =
-                "block";
-
-        }
-    );
-
-
-    btnInstalar.addEventListener(
-        "click",
-        async () => {
-
-            if (!deferredPrompt) {
-
-                alert(
-                    "La instalación no está disponible " +
-                    "en este momento. Si ya instalaste la aplicación, " +
-                    "puedes abrirla desde tu dispositivo."
-                );
-
-                return;
-
-            }
-
-
-            deferredPrompt.prompt();
-
-
-            const {
-                outcome
-            } = await deferredPrompt.userChoice;
-
+        navigator.serviceWorker
+          .register("sw.js")
+          .then(function() {
 
             console.log(
-                "Resultado instalación:",
-                outcome
+              "Service Worker activo"
             );
 
+          })
+          .catch(function(error) {
 
-            deferredPrompt = null;
-
-            btnInstalar.style.display =
-                "none";
-
-        }
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | INSTALACIÓN COMPLETADA
-    |--------------------------------------------------------------------------
-    */
-
-    window.addEventListener(
-        "appinstalled",
-        () => {
-
-            console.log(
-                "Aplicación instalada correctamente"
+            console.error(
+              "Error registrando SW:",
+              error
             );
 
-            btnInstalar.style.display =
-                "none";
+          });
 
-        }
+      }
     );
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | MENSAJE INICIAL
-    |--------------------------------------------------------------------------
-    */
-
-    actualizarPreview();
+  }
 
 </script>
 
